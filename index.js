@@ -3,6 +3,8 @@ const cors = require("cors");
 const app = express();
 const { connection } = require("./db");
 
+const { UserRouter } = require("./Routes/User.route");
+
 
 require("dotenv").config();
 app.use(express.json());
@@ -11,6 +13,8 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.send("Welcome to Agency-86 Home page");
 });
+app.use("/users", UserRouter);
+
 
 
 app.listen(process.env.port, async () => {
