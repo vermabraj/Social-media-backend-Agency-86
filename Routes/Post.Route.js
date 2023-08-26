@@ -2,10 +2,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const { authenticate } = require("../Middlewares/authenticate.middleware");
 const { postModel } = require("../Models/Post.model");
-const { UserModel } = require("../Models/User.model");
 
 const postRouter = express.Router();
-
 
 postRouter.get("/", async (req, res) => {
   try {
@@ -20,7 +18,6 @@ postRouter.get("/", async (req, res) => {
   }
 });
 
-
 postRouter.get("/:id", async (req, res) => {
   const ID = req.params.id;
   try {
@@ -34,7 +31,6 @@ postRouter.get("/:id", async (req, res) => {
   }
 });
 
-
 postRouter.post("/create", authenticate, async (req, res) => {
   try {
     const post_to_add = new postModel(req.body);
@@ -45,7 +41,6 @@ postRouter.post("/create", authenticate, async (req, res) => {
     res.send({ message: "Something went wrong", error: err });
   }
 });
-
 
 postRouter.patch("/update/:id", authenticate, async (req, res) => {
   const ID = req.params.id;
@@ -63,7 +58,6 @@ postRouter.patch("/update/:id", authenticate, async (req, res) => {
   }
 });
 
-
 postRouter.delete("/delete/:id", authenticate, async (req, res) => {
   const ID = req.params.id;
   try {
@@ -79,7 +73,6 @@ postRouter.delete("/delete/:id", authenticate, async (req, res) => {
     res.send({ message: "Something went wrong", error: err });
   }
 });
-
 
 postRouter.put("/likes/:id", authenticate, async (req, res) => {
   try {
@@ -108,46 +101,5 @@ postRouter.put("/likes/:id", authenticate, async (req, res) => {
     res.status(400).send("Internal Server error");
   }
 });
-
-
-// analytics
-
-postRouter.get("/analytics/users/top-active", authenticate, async (req, res) => {
-  const { user } = req.body;
-
-  try {
-    await postModel.find({ user })
-      .populate("user")
-      .then((r) => {
-        return res.status(200).send(r);
-      });
-  } catch (e) {
-    return res.status(400).send(e.message);
-  }
-});
-
-
-
-
-// GET top 5 most active users based on number of posts
-postRouter.get('/analytics/users/top-active', async (req, res) => {
-  try {
-    const users = await postModel.find({})
-      .sort({ posts: -1 })
-      .limit(5)
-      .select('name posts');
-    
-    // This will return users with their names and post counts.
-    const result = users.map(user => ({
-      name: user.name,
-      postCount: user.posts.length,
-    }));
-
-    res.json(result);
-  } catch (error) {
-    res.status(500).send('Error retrieving top active users');
-  }
-});
-
 
 module.exports = { postRouter };
