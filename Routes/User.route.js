@@ -3,6 +3,7 @@ const { UserModel } = require("../Models/User.model");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { authenticate } = require("../Middlewares/authenticate.middleware");
 const UserRouter = express.Router();
 
 UserRouter.post("/register", async (req, res) => {
@@ -38,9 +39,8 @@ UserRouter.post("/login", async (req, res) => {
         if (result) {
           const token = jwt.sign({ userID: user[0]._id }, "masai");
           res.send({
-            first_name: user[0].first_name,
-            last_name: user[0].last_name,
-            gender: user[0].gender,
+            _id: user[0]._id,
+            name: user[0].first_name,
             email: user[0].email,
             token: token,
           });
@@ -56,6 +56,31 @@ UserRouter.post("/login", async (req, res) => {
       msg: "something went wrong with registering user",
       error: err.message,
     });
+  }
+});
+
+UserRouter.patch("/update/:id", authenticate, async (req, res) => {
+  const ID = req.params.id;
+  try {
+    const post = await UserModel.find({ _id: ID, user: req.body.user });
+    if (post.length > 0) {
+      await UserModel.findByIdAndUpdate({ _id: ID }, req.body);
+      res.send({ message: "User updated successfully" });
+    } else {
+      res.status(405).send({ message: "Method Not Allowed by this User" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send({ message: "Something went wrong", error: err });
+  }
+});
+
+// LOGOUT
+UserRouter.post("/logout", async (req, res) => {
+  try {
+    res.send({ message: "Logged Out" });
+  } catch (error) {
+    res.status(400).send({ error: error });
   }
 });
 

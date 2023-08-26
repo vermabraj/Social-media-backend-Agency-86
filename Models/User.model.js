@@ -21,7 +21,6 @@ const UserSchema = new Schema(
       required: true,
       max: 200,
     },
-    saved_posts: [{ type: Schema.Types.ObjectId, ref: "post", default: [] }],
   },
   {
     versionKey: false,
@@ -29,5 +28,5 @@ const UserSchema = new Schema(
   }
 );
 
-const UserModel = model("user", UserSchema);
+const UserModel = model("User", UserSchema);
 module.exports = { UserModel };

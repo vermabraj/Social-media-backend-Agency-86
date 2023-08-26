@@ -7,14 +7,15 @@ const postSchema = new Schema(
     content: {
       type: String,
       required: true,
-      min:1,
+      min: 1,
       max: 300,
     },
 
-    likes: [{ type: Schema.Types.ObjectId, ref: "user", default: [] }],
+    likes: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
   },
   {
     versionKey: false,
+    timestamps: true,
   }
 );
 
