@@ -4,7 +4,7 @@ const app = express();
 const { connection } = require("./db");
 
 const { UserRouter } = require("./Routes/User.route");
-
+const { postRouter } = require("./Routes/Post.Route");
 
 require("dotenv").config();
 app.use(express.json());
@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 });
 app.use("/users", UserRouter);
 
-
+app.use("/posts", postRouter);
 
 app.listen(process.env.port, async () => {
   try {

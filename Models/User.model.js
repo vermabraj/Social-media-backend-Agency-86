@@ -1,17 +1,15 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const UserSchema = mongoose.Schema(
+const UserSchema = new Schema(
   {
     name: {
       type: String,
       required: true,
+      min: 1,
+      max: 50,
     },
 
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+    email: { type: String, required: true, min: 4, unique: true },
 
     password: {
       type: String,
@@ -21,7 +19,9 @@ const UserSchema = mongoose.Schema(
     bio: {
       type: String,
       required: true,
+      max: 200,
     },
+    saved_posts: [{ type: Schema.Types.ObjectId, ref: "post", default: [] }],
   },
   {
     versionKey: false,
@@ -29,5 +29,5 @@ const UserSchema = mongoose.Schema(
   }
 );
 
-const UserModel = mongoose.model("user", UserSchema);
+const UserModel = model("user", UserSchema);
 module.exports = { UserModel };

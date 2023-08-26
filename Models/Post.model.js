@@ -4,23 +4,14 @@ const postSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User" },
     productId: { type: Schema.Types.ObjectId, ref: "product" },
-    title: {
+    content: {
       type: String,
       required: true,
-    },
-    date: {
-      type: String,
-      required: true,
-    },
-    imageSrc: {
-      type: String,
-      required: true,
+      min:1,
+      max: 300,
     },
 
-    description: {
-      type: String,
-      required: true,
-    },
+    likes: [{ type: Schema.Types.ObjectId, ref: "user", default: [] }],
   },
   {
     versionKey: false,
