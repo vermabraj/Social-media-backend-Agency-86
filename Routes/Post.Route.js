@@ -109,4 +109,45 @@ postRouter.put("/likes/:id", authenticate, async (req, res) => {
   }
 });
 
+
+// analytics
+
+postRouter.get("/analytics/users/top-active", authenticate, async (req, res) => {
+  const { user } = req.body;
+
+  try {
+    await postModel.find({ user })
+      .populate("user")
+      .then((r) => {
+        return res.status(200).send(r);
+      });
+  } catch (e) {
+    return res.status(400).send(e.message);
+  }
+});
+
+
+
+
+// GET top 5 most active users based on number of posts
+postRouter.get('/analytics/users/top-active', async (req, res) => {
+  try {
+    const users = await postModel.find({})
+      .sort({ posts: -1 })
+      .limit(5)
+      .select('name posts');
+    
+    // This will return users with their names and post counts.
+    const result = users.map(user => ({
+      name: user.name,
+      postCount: user.posts.length,
+    }));
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).send('Error retrieving top active users');
+  }
+});
+
+
 module.exports = { postRouter };
