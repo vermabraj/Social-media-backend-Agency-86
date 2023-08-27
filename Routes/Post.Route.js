@@ -45,7 +45,7 @@ postRouter.post("/create", authenticate, async (req, res) => {
 postRouter.patch("/update/:id", authenticate, async (req, res) => {
   const ID = req.params.id;
   try {
-    const post = await postModel.find({ _id: ID, author: req.body.author });
+    const post = await postModel.find({ _id: ID, user: req.body.user });
     if (post.length > 0) {
       await postModel.findByIdAndUpdate({ _id: ID }, req.body);
       res.send({ message: "Post updated successfully" });
